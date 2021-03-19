@@ -8,14 +8,32 @@ import React, { useEffect, useState } from 'react';
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import MicIcon from '@material-ui/icons/Mic';
 import './chat.css';
+import { useParams } from 'react-router';
+import db from '../../config/firebaseConfig';
 
 const Chat = () => {
     const [seed, setSeed] = useState("");
-    const [inputText, setInputText] = useState("")
+    const [inputText, setInputText] = useState("");
+    const [roomName, setRoomName] = useState("");
+    const [roomURL, setRoomURL] = useState("");
+    const { roomId } = useParams();
 
-    useEffect( () => {
-        setSeed(Math.floor(Math.random() * 10000));
-    }, []);
+    // hook for switching roomId to display in Chat
+    useEffect( () =>{
+        if(roomId){
+            db.collection('room')
+                .doc(roomId)
+                .onSnapshot( snapshot =>{
+                    setRoomName(snapshot.data().name);
+                    setRoomURL(snapshot.data().roomURL)
+                })
+        }
+    }, [roomId])
+
+    // hook for set random avatar image seeds for rooms
+    // useEffect( () => {
+    //     setSeed(Math.floor(Math.random() * 10000));
+    // }, [roomId]);
 
     const sendMessage = (e) =>{
         e.preventDefault();
@@ -26,10 +44,10 @@ const Chat = () => {
     return (
         <div className="chat">
             <div className="chat__header">
-                <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
+                <Avatar src={roomURL} />
 
                 <div className="chat__headerInfo">
-                    <h3>Room Name</h3>
+                    <h3>{roomName}</h3>
                     <p>Last seen at ...</p>
                 </div>
 
