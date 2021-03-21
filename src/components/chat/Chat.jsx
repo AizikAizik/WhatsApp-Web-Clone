@@ -10,23 +10,37 @@ import MicIcon from '@material-ui/icons/Mic';
 import './chat.css';
 import { useParams } from 'react-router';
 import db from '../../config/firebaseConfig';
+//import Message from '../messages/Message';
+import firebase from 'firebase';
+import { useStateValue } from '../../provider/stateProvider';
 
 const Chat = () => {
-    const [seed, setSeed] = useState("");
+    //const [seed, setSeed] = useState("");
     const [inputText, setInputText] = useState("");
     const [roomName, setRoomName] = useState("");
     const [roomURL, setRoomURL] = useState("");
+    const [messages, setMessages] = useState([]);
     const { roomId } = useParams();
+    const [{ user }, dispatch] = useStateValue();
 
     // hook for switching roomId to display in Chat
-    useEffect( () =>{
-        if(roomId){
+    useEffect(() => {
+        if (roomId) {
             db.collection('room')
                 .doc(roomId)
-                .onSnapshot( snapshot =>{
+                .onSnapshot(snapshot => {
                     setRoomName(snapshot.data().name);
                     setRoomURL(snapshot.data().roomURL)
                 })
+
+            db.collection("room")
+                .doc(roomId)
+                .collection("messages")
+                .orderBy("timestamp", "asc")
+                .onSnapshot(snapshot => (
+                    setMessages(snapshot.docs.map(doc => doc.data()))
+                )
+            )
         }
     }, [roomId])
 
@@ -35,9 +49,18 @@ const Chat = () => {
     //     setSeed(Math.floor(Math.random() * 10000));
     // }, [roomId]);
 
-    const sendMessage = (e) =>{
+    const sendMessage = (e) => {
         e.preventDefault();
-        console.log(`You typed >>> ${inputText}`)
+        console.log(`You typed >>> ${inputText}`);
+
+        db.collection("room")
+            .doc(roomId)
+            .collection("messages")
+            .add({
+                name: user.displayName,
+                message: inputText,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
         setInputText("");
     }
 
@@ -64,15 +87,22 @@ const Chat = () => {
                 </div>
             </div>
             <div className="chat__body">
-                <p className={`chat__message ${true && "chat__receiver"}`}>
-                    <span className="chat__name">Aizik Ogunleye</span>
-                    Hey youtube
-                    <span className="chat__timestamp">4:00pm</span>
-                </p>
+                {messages.map((message) => (
+                    // <Message key={roomId} message={message} />
+                    <p className={`chat__message ${message.name === user.displayName && "chat__receiver"}`}>
+                        <span className="chat__name">{message.name}</span>
+                        {message.message}
+                        <span className="chat__timestamp">
+                            {new Date(message.timestamp?.toDate()).toUTCString()}
+                        </span>
+                    </p>
+                ))}
             </div>
             <div className="chat__footer">
                 {/* <InsertEmoticon /> */}
-                <EmojiEmotionsIcon />
+                <IconButton>
+                    <EmojiEmotionsIcon />
+                </IconButton>
                 <form>
                     <input
                         type="text"
@@ -82,10 +112,12 @@ const Chat = () => {
                     />
                     <button type="submit" onClick={sendMessage}>Send a message</button>
                 </form>
-                <MicIcon />
+                <IconButton>
+                    <MicIcon />
+                </IconButton>
             </div>
         </div>
     )
 }
 
-export default Chat
+export default Chat;
