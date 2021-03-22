@@ -16,7 +16,7 @@ import { useStateValue } from '../../provider/stateProvider';
 import FlipMove from 'react-flip-move';
 
 
-const Chat = forwardRef((undefined, ref) => {
+const Chat = forwardRef((props, ref) => {
     //const [seed, setSeed] = useState("");
     const [inputText, setInputText] = useState("");
     const [roomName, setRoomName] = useState("");
