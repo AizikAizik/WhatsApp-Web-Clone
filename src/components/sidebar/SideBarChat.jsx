@@ -6,11 +6,25 @@ import './sideBarChat.css';
 
 const SideBarChat = ({ addNewChat, id, name, roomURL }) => {
 
-    const [seed, setSeed] = useState("")
+    const [seed, setSeed] = useState("");
+    const [messages,setMessages] = useState("");
 
     useEffect(() => {
         setSeed(Math.floor(Math.random() * 10000));
     }, []);
+
+    // display latest message for each room on the sidebar
+    useEffect(() => {
+        if(id){
+            db.collection("room")
+                .doc(id)
+                .collection("messages")
+                .orderBy("timestamp", "desc")
+                .onSnapshot(snapshot => 
+                    setMessages(snapshot.docs.map( doc => doc.data() ))    
+                );
+        }
+    }, [id]);
 
     const createChat = () => {
         const roomName = prompt("Please enter room name for new chat");
@@ -31,7 +45,7 @@ const SideBarChat = ({ addNewChat, id, name, roomURL }) => {
                 <Avatar src={roomURL} />
                 <div className="sidebarChat__info">
                     <h2>{name}</h2>
-                    <p>Last message...</p>
+                    <p>{messages[0]?.message}</p>
                 </div>
             </div>
         </Link>
@@ -39,6 +53,7 @@ const SideBarChat = ({ addNewChat, id, name, roomURL }) => {
         <div
             className="sideBarChat"
             onClick={createChat}
+            title="create chat room"
         >
             <h2>Add new Chat</h2>
         </div>

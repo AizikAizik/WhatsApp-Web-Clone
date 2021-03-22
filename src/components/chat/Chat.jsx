@@ -71,7 +71,14 @@ const Chat = () => {
 
                 <div className="chat__headerInfo">
                     <h3>{roomName}</h3>
-                    <p>Last seen at ...</p>
+                    {
+                        messages.length ? (
+                            <p>
+                                Last Message{" "}
+                                {new Date(messages[messages.length - 1]?.timestamp?.toDate()).toUTCString()}
+                            </p>
+                        ) : <p>No messages</p>
+                    }
                 </div>
 
                 <div className="chat__headerRight">
@@ -87,9 +94,12 @@ const Chat = () => {
                 </div>
             </div>
             <div className="chat__body">
-                {messages.map((message) => (
+                {messages.map((message, i) => (
                     // <Message key={roomId} message={message} />
-                    <p className={`chat__message ${message.name === user.displayName && "chat__receiver"}`}>
+                    <p
+                        key={i}
+                        className={`chat__message ${message.name === user.displayName && "chat__receiver"}`}
+                    >
                         <span className="chat__name">{message.name}</span>
                         {message.message}
                         <span className="chat__timestamp">
