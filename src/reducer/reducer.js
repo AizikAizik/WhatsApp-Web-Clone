@@ -5,11 +5,11 @@ export const initialState = {
 
 // the action types for dispatching
 export const actionTypes = {
-    SET_USER: "SET_USER"
+    SET_USER: "SET_USER",
+    LOGOUT: "LOGOUT",
 }
 
 const reducer = (state, action) =>{
-    console.log(action);
 
     switch (action.type) {
         case actionTypes.SET_USER:
@@ -17,7 +17,12 @@ const reducer = (state, action) =>{
                 ...state,
                 user: action.user
             }
-    
+        
+        case actionTypes.LOGOUT:
+            return{
+                ...state,
+                user: null
+            }
         default:
             return state;
     }

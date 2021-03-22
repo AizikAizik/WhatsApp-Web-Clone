@@ -15,7 +15,7 @@
     display: flex;
     align-items: center;
     background-color: #f6f6f6;
-    height: 39px;
+    height: 49px;
     padding: 10px;
 }
 
@@ -26,6 +26,7 @@
     width: 100%;
     height: 35px;
     border-radius: 20px;
+    margin-bottom: 1px;
 }
 
 
@@ -38,6 +39,7 @@
     border: none;
     margin-left: 10px;
     width: 100%;
+    padding: 5px;
     outline: none;
 }
 
@@ -59,3 +61,12 @@
     overflow: scroll;
     overflow-x: hidden;
 }
+
+/* .sidebar__chats::webkit-scrollbar{
+    display: none;
+}
+
+.sidebar__chats{
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+} */

@@ -4,6 +4,17 @@
     flex-direction: column;
 }
 
+.empty{
+    flex: 0.65;
+    display: flex;
+    flex-direction: column;
+    background-image: url(../../images/whatsAppEmpty.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    object-fit: contain;
+    align-items: center;
+}
+
 .chat__header {
     padding: 20px;
     display: flex;

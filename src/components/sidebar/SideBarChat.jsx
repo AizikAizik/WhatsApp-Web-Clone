@@ -1,5 +1,6 @@
 import { Avatar } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import TextTruncate from 'react-text-truncate';
 import { Link } from 'react-router-dom';
 import db from '../../config/firebaseConfig';
 import './sideBarChat.css';
@@ -45,7 +46,12 @@ const SideBarChat = ({ addNewChat, id, name, roomURL }) => {
                 <Avatar src={roomURL} />
                 <div className="sidebarChat__info">
                     <h2>{name}</h2>
-                    <p>{messages[0]?.message}</p>
+                    <TextTruncate
+                        line={1}
+                        element="p"
+                        truncateText="..."
+                        text={messages[0]?.message}
+                    />
                 </div>
             </div>
         </Link>

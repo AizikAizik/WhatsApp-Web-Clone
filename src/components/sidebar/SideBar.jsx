@@ -3,11 +3,13 @@ import { Avatar, IconButton } from '@material-ui/core';
 import DonutLargeIcon from '@material-ui/icons/DonutLarge';
 import ChatIcon from '@material-ui/icons/Chat';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { SearchOutlined } from '@material-ui/icons';
 import "./sideBar.css";
 import SideBarChat from './SideBarChat';
 import db from '../../config/firebaseConfig';
 import { useStateValue } from '../../provider/stateProvider';
+import { actionTypes } from '../../reducer/reducer';
 
 function SideBar() {
     const [rooms, setRooms] = useState([]);
@@ -28,6 +30,15 @@ function SideBar() {
             }
         }, []
     )
+
+    const signOut = () => {
+        if(window.confirm("are you sure you want to sign out")){
+            dispatch({
+                type: actionTypes.LOGOUT,
+                user: null
+            })
+        }
+    }
     
     // return jsx here
     return (
@@ -41,8 +52,8 @@ function SideBar() {
                     <IconButton>
                         <ChatIcon />
                     </IconButton>
-                    <IconButton>
-                        <MoreVertIcon />
+                    <IconButton onClick={signOut}>
+                        <ExitToAppIcon />
                     </IconButton>
                 </div>
             </div>
